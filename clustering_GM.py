@@ -1,21 +1,20 @@
 
 
-from sklearn.cluster import KMeans
+from sklearn.mixture import GaussianMixture
 
 from cluster_labelling import labelling,accuracy_analysis
 
+
 import numpy as np
-
-
-from sklearn.datasets import load_digits       
+from sklearn.datasets import load_digits      
 
 from sklearn.metrics import accuracy_score
 
 
 
-#data, labels = load_digits(return_Xs_y=True)  
+#data, labels = load_digits(return_X_y=True)  
 
-dataset = "Dataset_N100000.txt"
+dataset = "Dataset_N1200.txt"
 print(dataset)
 data = np.loadtxt(dataset)
 labels = data[:, -1].astype(int) 
@@ -31,20 +30,21 @@ accuracy_list = []
 no_epochs = 5
 
 for _ in range(no_epochs):
-	
-  #K-Means: 
-  kmeans = KMeans(n_clusters=n_clusters, init='random',n_init=1, max_iter=30).fit(data)  
- 
 
 
-predicted_labels = labelling(kmeans.labels_, labels, n_clusters, n_samples)
+  #Gaussian Mixture: 
+  gm = GaussianMixture(n_components=n_clusters).fit(data)
+
+
+
+predicted_labels = labelling(gm.predict(data), labels, n_clusters, n_samples)
 accuracy = accuracy_score(labels, predicted_labels)
 accuracy_list.append(accuracy)
 
 accuracy_analysis(accuracy_list)
 
 
-kmeans.labels_
+
 
 
 
